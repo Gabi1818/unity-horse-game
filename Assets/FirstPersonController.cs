@@ -38,10 +38,28 @@ public class FirstPersonController : MonoBehaviour
         Cursor.visible = false;
     }
 
-
+    /*
     // Update is called once per frame
     void Update()
     {
+        var manager = MovementManager.Instance;
+
+        if (manager == null || manager.MovementEnabled)
+            HandleMovement();
+
+        if (manager == null || manager.LookEnabled)
+            HandleRotation();
+
+    }
+    */
+
+    public bool InputEnabled { get; set; } = true;
+
+    void Update()
+    {
+        if (!InputEnabled)
+            return;
+
         HandleMovement();
         HandleRotation();
     }
@@ -108,4 +126,27 @@ public class FirstPersonController : MonoBehaviour
         ApplyHorizontalRotation(mouseXRotation);
         ApplyVerticalRotation(mouseYRotation);
     }
+
+
+}
+
+public class MovementManager : MonoBehaviour
+{
+    public static MovementManager Instance { get; private set; }
+
+    public bool MovementEnabled { get; private set; } = true;
+    public bool LookEnabled { get; private set; } = true;
+
+    private void Awake()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Destroy(gameObject);
+            return;
+        }
+        Instance = this;
+    }
+
+    public void EnableMovement(bool value) => MovementEnabled = value;
+    public void EnableLook(bool value) => LookEnabled = value;
 }
